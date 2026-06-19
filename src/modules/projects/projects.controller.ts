@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Param, ParseIntPipe, UploadedFile, UseInterceptors, BadRequestException } from "@nestjs/common";
+import { Body, Controller, Get, Post, Param, ParseIntPipe, UploadedFile, UseInterceptors, BadRequestException, Request } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { extname, join } from "path";
@@ -17,6 +17,13 @@ export class ProjectsController {
     @Get()
     async findAll() {
         return await this.service.findAll();
+    }
+
+    @Get(':id')
+    async findById(
+        @Param("id", ParseIntPipe) id: number,
+    ) {
+        return await this.service.findById(id)
     }
 
     @Post()

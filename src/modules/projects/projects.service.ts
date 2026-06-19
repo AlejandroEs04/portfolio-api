@@ -22,6 +22,11 @@ export class ProjectsService {
         return projects;
     }
 
+    findById(id: number) : Promise<Project | null> {
+        const project = this.projectRepository.findOne({ where: { id }, relations: { images: true, projectTechnologies: { technology: true } } })
+        return project;
+    }
+
     async create(dto: ProjectInsertDto): Promise<Project> {
         const project = new Project();
         project.title = dto.title;
