@@ -30,6 +30,9 @@ import { ContactModule } from './modules/contact/contact.module';
         console.log('cwd:', process.cwd());
         console.log('__dirname:', __dirname);
 
+        console.log('process.env.DB_HOST:', process.env.DB_HOST);
+        console.log('process.env.DB_PASS:', process.env.DB_PASS);
+
         return {
           type: 'postgres',
           host: config.get<string>('DB_HOST'),
