@@ -18,16 +18,26 @@ import { ContactModule } from './modules/contact/contact.module';
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get<string>('DB_HOST'),
-        port: config.get<number>('DB_PORT'),
-        username: config.get<string>('DB_USER'),
-        password: config.get<string>('DB_PASS'),
-        database: config.get<string>('DB_DATABASE'),
-        entities: [Technology, Project, ProjectImage, ProjectTechnology],
-        synchronize: true,
-      }),
+      useFactory: (config: ConfigService) => {
+        console.log({
+          host: config.get('DB_HOST'),
+          port: config.get('DB_PORT'),
+          user: config.get('DB_USER'),
+          pass: config.get('DB_PASS'),
+          database: config.get('DB_DATABASE'),
+        });
+
+        return {
+          type: 'postgres',
+          host: config.get<string>('DB_HOST'),
+          port: config.get<number>('DB_PORT'),
+          username: config.get<string>('DB_USER'),
+          password: config.get<string>('DB_PASS'),
+          database: config.get<string>('DB_DATABASE'),
+          entities: [Technology, Project, ProjectImage, ProjectTechnology],
+          synchronize: true,
+        }
+      },
     }),
     TechnologiesHttpModule,
     ProjectTechnologiesHttpModule,
