@@ -27,6 +27,9 @@ import { ContactModule } from './modules/contact/contact.module';
           database: config.get('DB_DATABASE'),
         });
 
+        console.log('cwd:', process.cwd());
+        console.log('__dirname:', __dirname);
+
         return {
           type: 'postgres',
           host: config.get<string>('DB_HOST'),
