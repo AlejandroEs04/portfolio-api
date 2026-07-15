@@ -19,20 +19,6 @@ import { ContactModule } from './modules/contact/contact.module';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
-        console.log({
-          host: config.get('DB_HOST'),
-          port: config.get('DB_PORT'),
-          user: config.get('DB_USER'),
-          pass: config.get('DB_PASS'),
-          database: config.get('DB_DATABASE'),
-        });
-
-        console.log('cwd:', process.cwd());
-        console.log('__dirname:', __dirname);
-
-        console.log('process.env.DB_HOST:', process.env.DB_HOST);
-        console.log('process.env.DB_PASS:', process.env.DB_PASS);
-
         return {
           type: 'postgres',
           host: config.get<string>('DB_HOST'),
