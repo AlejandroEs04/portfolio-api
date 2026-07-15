@@ -11,6 +11,7 @@ import { ProjectTechnologiesHttpModule } from './modules/project-techologies/pro
 import { ProjectImagesHttpModule } from './modules/project-images/project-images-http.module';
 import { ProjectsHttpModule } from './modules/projects/projects-http.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { ContactModule } from './modules/contact/contact.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { UploadModule } from './modules/upload/upload.module';
     ProjectImagesHttpModule,
     ProjectsHttpModule,
     UploadModule,
+    ContactModule,
   ],
 })
 export class AppModule {

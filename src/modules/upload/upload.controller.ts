@@ -3,7 +3,9 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { extname, join } from "path";
 import { randomUUID } from "crypto";
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("Upload")
 @Controller("upload")
 export class UploadController {
     @Post()
@@ -25,6 +27,19 @@ export class UploadController {
             limits: { fileSize: 10 * 1024 * 1024 },
         }),
     )
+    @ApiOperation({ summary: "Upload a generic image file" })
+    @ApiConsumes("multipart/form-data")
+    @ApiBody({
+        schema: {
+            type: "object",
+            properties: {
+                file: { type: "string", format: "binary" },
+            },
+            required: ["file"],
+        },
+    })
+    @ApiResponse({ status: 201, description: "Image uploaded successfully, returns the URL" })
+    @ApiResponse({ status: 400, description: "No file provided or invalid file type" })
     uploadFile(@UploadedFile() file: Express.Multer.File) {
         if (!file) {
             throw new BadRequestException("No file provided");

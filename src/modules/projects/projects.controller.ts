@@ -1,12 +1,14 @@
-import { Body, Controller, Get, Post, Param, ParseIntPipe, UploadedFile, UseInterceptors, BadRequestException, Request } from "@nestjs/common";
+import { Body, Controller, Get, Post, Param, ParseIntPipe, UploadedFile, UseInterceptors, BadRequestException } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { extname, join } from "path";
 import { randomUUID } from "crypto";
+import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ProjectsService } from "./projects.service";
 import { ProjectImagesService } from "../project-images/project-images.service";
-import type { ProjectInsertDto } from "./dtos/project-insert.dto";
+import { ProjectInsertDto } from "./dtos/project-insert.dto";
 
+@ApiTags("Projects")
 @Controller("projects")
 export class ProjectsController {
     constructor(
@@ -15,21 +17,25 @@ export class ProjectsController {
     ) {}
 
     @Get()
+    @ApiOperation({ summary: "Get all projects" })
+    @ApiResponse({ status: 200, description: "List of all projects" })
     async findAll() {
         return await this.service.findAll();
     }
 
-    @Get(':id')
-    async findById(
-        @Param("id", ParseIntPipe) id: number,
-    ) {
-        return await this.service.findById(id)
+    @Get(":id")
+    @ApiOperation({ summary: "Get a project by ID" })
+    @ApiParam({ name: "id", description: "Project ID", example: 1 })
+    @ApiResponse({ status: 200, description: "Project found" })
+    @ApiResponse({ status: 404, description: "Project not found" })
+    async findById(@Param("id", ParseIntPipe) id: number) {
+        return await this.service.findById(id);
     }
 
     @Post()
-    async create(
-        @Body() dto: ProjectInsertDto
-    ) {        
+    @ApiOperation({ summary: "Create a new project" })
+    @ApiResponse({ status: 201, description: "Project created successfully" })
+    async create(@Body() dto: ProjectInsertDto) {
         return await this.service.create(dto);
     }
 
@@ -52,6 +58,21 @@ export class ProjectsController {
             limits: { fileSize: 10 * 1024 * 1024 },
         }),
     )
+    @ApiOperation({ summary: "Upload an image for a project" })
+    @ApiConsumes("multipart/form-data")
+    @ApiParam({ name: "id", description: "Project ID", example: 1 })
+    @ApiBody({
+        schema: {
+            type: "object",
+            properties: {
+                file: { type: "string", format: "binary" },
+                isMain: { type: "string", example: "true", description: "Whether this is the main project image" },
+            },
+            required: ["file"],
+        },
+    })
+    @ApiResponse({ status: 201, description: "Image uploaded successfully" })
+    @ApiResponse({ status: 400, description: "No file provided or invalid file type" })
     async uploadImage(
         @Param("id", ParseIntPipe) id: number,
         @UploadedFile() file: Express.Multer.File,
