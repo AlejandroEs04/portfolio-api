@@ -35,6 +35,6 @@ RUN mkdir -p uploads/projects && chown -R nestjs:nodejs uploads
 
 USER nestjs
 
-EXPOSE 3000
+EXPOSE 3006
 
 CMD ["node", "dist/main"]
