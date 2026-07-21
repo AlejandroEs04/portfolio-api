@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Param, ParseIntPipe, UploadedFile, UseInterceptors, BadRequestException } from "@nestjs/common";
+import { Body, Controller, Get, Post, Patch, Delete, Param, ParseIntPipe, UploadedFile, UseInterceptors, BadRequestException, HttpCode, HttpStatus } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { extname, join } from "path";
@@ -7,6 +7,7 @@ import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } fr
 import { ProjectsService } from "./projects.service";
 import { ProjectImagesService } from "../project-images/project-images.service";
 import { ProjectInsertDto } from "./dtos/project-insert.dto";
+import { ProjectUpdateDto } from "./dtos/project-update.dto";
 
 @ApiTags("Projects")
 @Controller("projects")
@@ -37,6 +38,39 @@ export class ProjectsController {
     @ApiResponse({ status: 201, description: "Project created successfully" })
     async create(@Body() dto: ProjectInsertDto) {
         return await this.service.create(dto);
+    }
+
+    @Patch(":id")
+    @ApiOperation({ summary: "Update a project" })
+    @ApiParam({ name: "id", description: "Project ID", example: 1 })
+    @ApiResponse({ status: 200, description: "Project updated successfully" })
+    @ApiResponse({ status: 404, description: "Project not found" })
+    async update(@Param("id", ParseIntPipe) id: number, @Body() dto: ProjectUpdateDto) {
+        return await this.service.update(id, dto);
+    }
+
+    @Delete(":id")
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({ summary: "Delete a project" })
+    @ApiParam({ name: "id", description: "Project ID", example: 1 })
+    @ApiResponse({ status: 204, description: "Project deleted successfully" })
+    @ApiResponse({ status: 404, description: "Project not found" })
+    async delete(@Param("id", ParseIntPipe) id: number) {
+        await this.service.delete(id);
+    }
+
+    @Delete(":id/images/:imageId")
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({ summary: "Delete an image from a project" })
+    @ApiParam({ name: "id", description: "Project ID", example: 1 })
+    @ApiParam({ name: "imageId", description: "Image ID", example: 1 })
+    @ApiResponse({ status: 204, description: "Image deleted successfully" })
+    @ApiResponse({ status: 404, description: "Image not found" })
+    async deleteImage(
+        @Param("id", ParseIntPipe) id: number,
+        @Param("imageId", ParseIntPipe) imageId: number,
+    ) {
+        await this.projectImageService.delete(id, imageId);
     }
 
     @Post(":id/images")

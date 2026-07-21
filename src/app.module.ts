@@ -5,11 +5,15 @@ import { Technology } from './modules/technologies/entities/technology.entity';
 import { Project } from './modules/projects/entities/project.entity';
 import { ProjectImage } from './modules/project-images/entities/project-image.entity';
 import { ProjectTechnology } from './modules/project-techologies/entities/project-technology.entity';
+import { Service } from './modules/services/entities/service.entity';
+import { ServicePlan } from './modules/service-plans/entities/service-plan.entity';
 import { DataSource } from 'typeorm';
 import { TechnologiesHttpModule } from './modules/technologies/technologies-http.module';
 import { ProjectTechnologiesHttpModule } from './modules/project-techologies/project-technologies-http.module';
 import { ProjectImagesHttpModule } from './modules/project-images/project-images-http.module';
 import { ProjectsHttpModule } from './modules/projects/projects-http.module';
+import { ServicesHttpModule } from './modules/services/services-http.module';
+import { ServicePlansHttpModule } from './modules/service-plans/service-plans-http.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { ContactModule } from './modules/contact/contact.module';
 
@@ -26,7 +30,7 @@ import { ContactModule } from './modules/contact/contact.module';
           username: config.get<string>('DB_USER'),
           password: config.get<string>('DB_PASS'),
           database: config.get<string>('DB_DATABASE'),
-          entities: [Technology, Project, ProjectImage, ProjectTechnology],
+          entities: [Technology, Project, ProjectImage, ProjectTechnology, Service, ServicePlan],
           synchronize: true,
         }
       },
@@ -35,6 +39,8 @@ import { ContactModule } from './modules/contact/contact.module';
     ProjectTechnologiesHttpModule,
     ProjectImagesHttpModule,
     ProjectsHttpModule,
+    ServicePlansHttpModule,
+    ServicesHttpModule,
     UploadModule,
     ContactModule,
   ],
